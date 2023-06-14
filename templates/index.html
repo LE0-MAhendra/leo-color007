@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>color007</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css')
+    }}"
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>😎COLOR007🔫</h1>
+    </div>
+    <div class="mess">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category,message in messages %}
+      <div class="alert alert-{{category}}">{{message}}</div>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+
+    <div class="container" style="background-image: url('{{filename}}');"></div>
+    <div class="inp">
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/jpeg, image/png" />
+        <input type="submit" value="Upload" />
+      </form>
+    </div>
+
+    <div class="values">
+      <h1>RGB values</h1>
+      {% for val in values %}
+      <h2 style="background-color:rgb{{val}};">{{val}}</h2>
+      <br />
+      {% endfor %}
+    </div>
+    <div class="footer">
+      <h1>LeoMahendra</h1>
+    </div>
+  </body>
+</html>
