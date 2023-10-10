@@ -1,7 +1,7 @@
 import os
 import PIL
 import extcolors
-from flask import Flask, render_template, request, redirect, flash, url_for, sessions
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 UPLOAD_DIRECTORY = './static/images/'
@@ -21,23 +21,16 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    # Check if the 'image' file is present in the request
     if 'image' not in request.files:
         return 'No file uploaded', 400
 
     image = request.files['image']
-
-    # Check if the file has a valid extension
     allowed_extensions = {'jpg', 'jpeg', 'png'}
     if image.filename.split('.')[-1].lower() not in allowed_extensions:
         return 'Invalid file extension', 400
-
-    # Save the image file to the specified directory
     if not os.path.exists(UPLOAD_DIRECTORY):
         os.makedirs(UPLOAD_DIRECTORY)
     tempfile = f"temp.{image.filename.split('.')[-1].lower()}"
-
-    # print(image.filename.split('.')[0])
     fileloc = os.path.join(UPLOAD_DIRECTORY, tempfile)
 
     image.save(fileloc)
