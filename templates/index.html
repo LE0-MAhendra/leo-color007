@@ -26,12 +26,14 @@
       </form>
     </div>
 
-    <div class="values">
+    <div class="value">
       <h1>RGB values</h1>
-      {% for val in values %}
-      <h2 style="background-color:rgb{{val}};">{{val}}</h2>
-      <br />
-      {% endfor %}
+      <div class="values">
+        {% for val in values %}
+        <h2 style="background-color:rgb{{val}};">{{val}}</h2>
+        <br />
+        {% endfor %}
+      </div>
     </div>
     <div class="footer">
       <h1>LeoMahendra</h1>
