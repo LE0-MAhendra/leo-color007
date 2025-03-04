@@ -1,42 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>color007</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css')
-    }}"
-  </head>
-  <body>
-    <div class="navbar">
-      <h1>Color Extractor</h1>
-    </div>
-    <div class="mess">
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if
-      messages %} {% for category,message in messages %}
-      <div class="alert alert-{{category}}">{{message}}</div>
-      {% endfor %} {% endif %} {% endwith %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Extractor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-900 p-6 text-white shadow-lg">
+        <h1 class="text-3xl font-extrabold text-center tracking-wide">Color Extractor</h1>
+    </nav>
+
+    <div class="container mx-auto mt-8 p-6">
+        <div class="mb-6">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-3 text-white bg-gray-800 rounded-lg shadow-md text-center font-medium">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Image Preview Box -->
+        <div class="flex flex-col items-center">
+            <div 
+                id="preview"
+                class="w-96 h-60 bg-gray-800 flex items-center justify-center text-gray-400 text-xl rounded-xl shadow-lg border-4 border-gray-700 overflow-hidden transform hover:scale-105 transition duration-300"
+                style="background-size: contain; background-repeat: no-repeat; background-position: center;"
+            >
+                {% if filename %}
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.getElementById("preview").style.backgroundImage = "url('{{ filename }}')";
+                            document.getElementById("preview").innerHTML = "";
+                        });
+                    </script>
+                {% else %}
+                    No Image Uploaded
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- File Upload Form -->
+        <div class="mt-8 flex flex-col items-center">
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="bg-gray-900 p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-700">
+                <input id="imageInput" type="file" name="image" accept="image/jpeg, image/png" class="block w-full p-3 border border-gray-700 rounded-lg mb-4 bg-gray-800 text-white focus:ring-2 focus:ring-white" />
+                <input type="submit" value="Upload" class="w-full bg-gray-700 text-white p-3 rounded-lg cursor-pointer hover:bg-gray-600 transition font-semibold" />
+            </form>
+        </div>
+
+        <!-- RGB Values Display -->
+        <div class="mt-8 text-center">
+            <h1 class="text-3xl font-bold mb-6 text-white">Extracted RGB Values</h1>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {% for val in values %}
+                    <div 
+                        class="p-5 rounded-lg text-white text-center shadow-md font-semibold transform hover:scale-105 transition duration-300 border border-gray-700"
+                        style="background-color: rgb{{ val }};"
+                    >
+                        {{ val }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
-    <div class="container" style="background-image: url('{{filename}}');"></div>
-    <div class="inp">
-      <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/jpeg, image/png" />
-        <input type="submit" value="Upload" />
-      </form>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white text-center p-6 mt-8 shadow-md">
+        <h1 class="text-lg font-bold tracking-wider">Developed by LeoMahendra</h1>
+    </footer>
 
-    <div class="value">
-      <h1>RGB values</h1>
-      <div class="values">
-        {% for val in values %}
-        <h2 style="background-color:rgb{{val}};">{{val}}</h2>
-        <br />
-        {% endfor %}
-      </div>
-    </div>
-    <div class="footer">
-      <h1>LeoMahendra</h1>
-    </div>
-  </body>
+    <!-- JavaScript to Handle Image Preview -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const imageInput = document.getElementById("imageInput");
+            const previewDiv = document.getElementById("preview");
+
+            imageInput.addEventListener("change", function (event) {
+                let file = event.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewDiv.style.backgroundImage = `url('${e.target.result}')`;
+                        previewDiv.style.backgroundSize = "contain";
+                        previewDiv.style.backgroundRepeat = "no-repeat";
+                        previewDiv.style.backgroundPosition = "center";
+                        previewDiv.innerHTML = "";
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    previewDiv.style.backgroundImage = "none";
+                    previewDiv.innerHTML = "No Image Uploaded";
+                }
+            });
+        });
+    </script>
+
+</body>
 </html>
